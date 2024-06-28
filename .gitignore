@@ -2,6 +2,8 @@ firmware/**
 *.zip
 *.kip1
 *.nso0
+hekate_patches/loader_patches.ini
+hekate_patches/fs_patches.ini
 patches/atmosphere/*/*.ips
 patches/atmosphere/*/*.ips
 patches/atmosphere/*/*.ips

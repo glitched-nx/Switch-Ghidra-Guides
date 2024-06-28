@@ -89,9 +89,9 @@ def main():
     shutil.make_archive('patches', 'zip', 'patches')
     logger_interface.info('SigPatches OK')
 
-    # os.remove(_C_LOADERKIP_FILE)
-    # os.remove(_D_LOADERKIP_FILE)
-    # os.remove('./'+atmosphere_archive_name)
+    os.remove(_C_LOADERKIP_FILE)
+    os.remove(_D_LOADERKIP_FILE)
+    os.remove('./'+atmosphere_archive_name)
 
 
 if __name__ == "__main__":
