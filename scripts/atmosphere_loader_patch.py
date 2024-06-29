@@ -29,7 +29,7 @@ def main():
 
     atmosphere_archive_name = atmosphere_asset['name']
     atmosphere_version = re.search('[0-9.]{5}', atmosphere_archive_name).group()
-    atmosphere_hash = re.search('[0-9A-Fa-f]{9}', atmosphere_archive_name).group()
+    atmosphere_hash = re.search('[0-9A-Fa-f]{6,9}', atmosphere_archive_name).group()
     logger_interface.info('Atifact name: %s', atmosphere_archive_name)
     logger_interface.info('Atmosphere version: %s', atmosphere_version)
     logger_interface.info('Atmosphere hash: %s', atmosphere_hash)
