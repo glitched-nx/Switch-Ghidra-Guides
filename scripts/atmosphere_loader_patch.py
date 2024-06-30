@@ -14,8 +14,6 @@ _C_LOADERKIP_FILE = "./compressed_loader.kip1"
 _D_LOADERKIP_FILE = "./decompressed_loader.kip1"
 
 def main():
-    logger_interface.info('Creating directories OK')
-
     release_info = requests.get('https://api.github.com/repos/Atmosphere-NX/Atmosphere/releases/latest').json()
     atmosphere_asset = list(filter(lambda x: 'atmosphere' in x['name'], release_info['assets']))[0]
 
