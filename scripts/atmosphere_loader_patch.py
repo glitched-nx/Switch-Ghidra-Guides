@@ -50,12 +50,11 @@ def main():
     loader_end = loader_start + size
     logger_interface.info('\nloader locate: %s, %s\nloader size: %s\nloader offset: %s, %s',
                           locate_loader, hex(locate_loader),
-                          size,
-                          loader_start, hex(loader_start))
+                          size, loader_start, hex(loader_start))
     loader_kip = package_data[loader_start:loader_end]
     if not re.compile(b'\x4B\x49\x50\x31\x4C\x6F\x61\x64\x65\x72').search(loader_kip):
-        logger_interface.warning('KIP1Loader magic not found! - Script needs to be fixed, loader_kip is not correct!')
-        sys.exit()
+        logger_interface.error('KIP1Loader magic not found! - Script needs to be fixed, loader_kip is not correct!')
+        sys.exit(0)
 
     with open(_C_LOADERKIP_FILE, 'wb') as compressed_loader_file:
         compressed_loader_file.write(loader_kip)
