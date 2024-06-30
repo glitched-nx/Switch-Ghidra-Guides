@@ -59,12 +59,14 @@ def main():
     with open(_C_LOADERKIP_FILE, 'wb') as compressed_loader_file:
         compressed_loader_file.write(loader_kip)
     os.system(f'hactoolnet -t kip1 {_C_LOADERKIP_FILE} --uncompressed {_D_LOADERKIP_FILE}')
+    logger_interface.info('Uncompressing loader OK')
 
     with open(_D_LOADERKIP_FILE, 'rb') as decompressed_loader_kip:
         loader_data = decompressed_loader_kip.read()
         result = re.search(b'\x00\x94\x01\xC0\xBE\x12\x1F\x00', loader_data)
-        # <> 0001 00
-        patch = f'{result.end():06X}000100'
+        if not result:
+            logger_interface.error('Instructions for the patch were not found')
+            sys.exit(0)
         hash = hashlib.sha256(loader_kip).hexdigest().upper()
         logger_interface.info('\nIPS LOADER HASH: %s\nIPS LOADER PATCH: %s\nHEKATE LOADER HASH: %s\nHEKATE LOADER PATCH: %04X:0x1:01,00',
                                 hash, patch, hash[:16], result.end()-0x100)
