@@ -1,13 +1,13 @@
 import re
-import subprocess
 import os
 import sys
 import hashlib
 import logging
 import argparse
 import shutil
+import platform
 
-_HACTOOLNET = 'hactoolnet'
+import modules
 
 def check_key_file(file_path):
     result = True
@@ -19,41 +19,58 @@ def check_key_file(file_path):
     ns_keys = {}
     with open(file_path, 'r') as file:
         for line in file:
-            key, value = line.strip().split('=')
-            result[key] = value
+            key, value = line.replace(' ', '').rstrip().split('=')
+            ns_keys[key] = value
 
-    for p_key, p_value in ns_keys.items():
-        if 'package1_key_' not in p_key:
-            logger_interface.error('package1_key_<> is missing in keys file, we cannot proceed with keygen as package1 cannot be opened for the purpose of obtaining master_kek_source. Exiting.')
-            break
-        if 'tsec_root_key_' not in check_key:
-            logger_interface.error('tsec_root_key_<> is missing in keys file, we cannot derive a new master_kek from the new master_kek_source, keygen will not yield new keys. Exiting.')
+    for p_key in ns_keys.keys():
+        if 'package1_key_' in p_key:
             break
     else:
+        logger_interface.error('package1_key_<> is missing in keys file, we cannot proceed with keygen as package1 cannot be opened for the purpose of obtaining master_kek_source. Exiting.')
+        result = False
+
+    for p_key in ns_keys.keys():
+        if 'tsec_root_key_' in p_key:
+            break
+    else:
+        logger_interface.error('tsec_root_key_<> is missing in keys file, we cannot derive a new master_kek from the new master_kek_source, keygen will not yield new keys. Exiting.')
         result = False
 
     for p_key, p_value_hash in valid_hashes.items():
-        t_hash = hashlib.md5(ns_keys[p_key].encode()).hexdigest()
+        t_hash = hashlib.md5(ns_keys[p_key].encode('utf-8')).hexdigest()
         if p_value_hash != t_hash:
             logger_interface.error('hash is not valid for %s value', p_key)
+            result = False
             break
-    else:
-        result = False
 
     return result
 
 
 def main():
-    if not check_key_file():
-        shutil.rmtree('0100000000000819')
+    if platform.system() == "Windows":
+        hactoolnet = "./tools/hactoolnet-windows.exe"
+    elif platform.system() == "Linux":
+        hactoolnet = "./tools/hactoolnet-linux"
+    elif platform.system() == "MacOS":
+        hactoolnet = "./tools/hactoolnet-macos"
+    else:
+        logger_interface.warning(f"Unknown Platform: {platform.system()}, proide your own hactoolnet")
+        hactoolnet = "hactoolnet"
 
+    raw_path = {
+        'erista': 'nx',
+        'mariko': 'a'
+    }
+
+    if not check_key_file(args.prod_keys):
+        logger_interface.error('Keys file is not valid!')
+        sys.exit()
     logger_interface.info('Extracting ROMFS BootImagePackage from provided firmware files.')
-    subprocess.run(f'{_HACTOOLNET} --keyset {args.prod_keys} -t switchfs {args.firmware} --title 0100000000000819 --romfsdir 0100000000000819/romfs/', stdout=subprocess.DEVNULL)
+    os.system(f'{hactoolnet} --keyset {args.prod_keys} --intype switchfs --raw {args.firmware} --title 0100000000000819 --romfsdir 0100000000000819/romfs/')
     logger_interface.info('Extracting Package1 from ROMFS')
-    subprocess.run(f'{_HACTOOLNET} --keyset {args.prod_keys} -t pk11 0100000000000819/romfs/nx/package1 --outdir 0100000000000819/romfs/nx/pkg1', stdout=subprocess.DEVNULL)
-    logger_interface.info('Checking if a new master_kek_source is found in Package1.')
+    os.system(f'{hactoolnet} --keyset {args.prod_keys} --intype pk11 --outdir 0100000000000819/romfs/{raw_path[args.rev_name]}/pkg1 --raw 0100000000000819/romfs/{raw_path[args.rev_name]}/package1')
 
-    with open('0100000000000819/romfs/nx/pkg1/Decrypted.bin', 'rb') as decrypted_bin:
+    with open('0100000000000819/romfs/a/pkg1/Decrypted.bin', 'rb') as decrypted_bin:
         secmon_data = decrypted_bin.read()
         result = re.search(b'\x4F\x59\x41\x53\x55\x4D\x49', secmon_data)
         if args.rev_name == 'erista':
@@ -72,20 +89,9 @@ def main():
         elif args.rev_name == 'mariko':
             master_kek_source = f'mariko_master_kek_source_{incremented_revision} = {master_kek_source_key}'
 
-    os.rename(args.prod_keys, 'temp.keys')
-    with open('temp.keys', 'a') as temp_keys:
-        temp_keys.write(f'\n')
-        temp_keys.write(master_kek_source+'\n')
+    os.system(f'{hactoolnet} --keyset "temp.keys" --intype keygen --outdir new-keys/')
+    logger_interface.info('Keygen completed!')
 
-    with open(args.prod_keys, 'w') as new_prod_keys:
-        if args.dev_env:
-            subprocess.run(f'{_HACTOOLNET} --dev --keyset temp.keys -t keygen', stdout=new_prod_keys)
-            print(f'You just generated a dev keyset, which are only useful for developer ncas written with nnsdk keyset, and they have been output to {prod_keys}')
-        elif not args.dev_env:
-            subprocess.run(f'{_HACTOOLNET} --keyset "temp.keys" -t keygen', stdout=new_prod_keys)
-        logger_interface.info('# Keygen completed and output to %s, exiting.', args.prod_keys)
-
-    os.remove('temp.keys')
     shutil.rmtree('0100000000000819')
 
 
@@ -93,8 +99,7 @@ if __name__ == "__main__":
     argParser = argparse.ArgumentParser()
     argParser.add_argument("-f", "--firmware", help="firmware folder", dest="firmware", type=str, default="./firmware")
     argParser.add_argument("-k", "--keys", help="keyfile to use", dest="prod_keys", type=str, default="./prod.keys")
-    argParser.add_argument("-d", "--dev", help="Initiates dev keyset keygen", dest="dev_env", type=bool, action='store_true')
-    argParser.add_argument("-r", "--revision", help="Revision name", dest="rev_name", type=str, choice=['mariko', 'erista'], required=True)
+    argParser.add_argument("-r", "--revision", help="Revision name", dest="rev_name", choices=['mariko', 'erista'], required=True)
     args = argParser.parse_args()
 
     logger_interface = logging.getLogger('keygen')
