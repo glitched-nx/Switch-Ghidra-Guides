@@ -1,4 +1,6 @@
 firmware/**
+new-keys/**
+0100000000000819/**
 *.zip
 *.kip1
 *.nso0
