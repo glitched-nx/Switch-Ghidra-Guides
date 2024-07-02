@@ -9,3 +9,13 @@ def logging_configuration(logger):
 
     logger.setLevel(logging.DEBUG)
     logger.addHandler(sh)
+
+if platform.system() == "Windows":
+    hactoolnet = "./tools/hactoolnet-windows.exe"
+elif platform.system() == "Linux":
+    hactoolnet = "./tools/hactoolnet-linux"
+elif platform.system() == "MacOS":
+    hactoolnet = "./tools/hactoolnet-macos"
+else:
+    logger_interface.warning(f"Unknown Platform: {platform.system()}, proide your own hactoolnet")
+    hactoolnet = "hactoolnet"
