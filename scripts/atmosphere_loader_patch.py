@@ -13,6 +13,16 @@ _C_LOADERKIP_FILE = "./compressed_loader.kip1"
 _D_LOADERKIP_FILE = "./decompressed_loader.kip1"
 
 def main():
+    if platform.system() == "Windows":
+        hactoolnet = "tools/hactoolnet-windows.exe"
+    elif platform.system() == "Linux":
+        hactoolnet = "tools/hactoolnet-linux"
+    elif platform.system() == "MacOS":
+        hactoolnet = "tools/hactoolnet-macos"
+    else:
+        print("Unknown Platform: {platform.system()}, proide your own hactoolnet")
+        hactoolnet = "hactoolnet"
+
     release_info = requests.get('https://api.github.com/repos/Atmosphere-NX/Atmosphere/releases/latest').json()
     atmosphere_asset = list(filter(lambda x: 'atmosphere' in x['name'], release_info['assets']))[0]
 
@@ -55,7 +65,7 @@ def main():
 
     with open(_C_LOADERKIP_FILE, 'wb') as compressed_loader_file:
         compressed_loader_file.write(loader_kip)
-    os.system(f'hactoolnet -t kip1 {_C_LOADERKIP_FILE} --uncompressed {_D_LOADERKIP_FILE}')
+    os.system(f'{hactoolnet} -t kip1 {_C_LOADERKIP_FILE} --uncompressed {_D_LOADERKIP_FILE}')
     logger_interface.info('Uncompressing loader OK')
 
     with open(_D_LOADERKIP_FILE, 'rb') as decompressed_loader_kip:
