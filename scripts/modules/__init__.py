@@ -1,4 +1,5 @@
 import logging
+import platform
 
 def logging_configuration(logger):
     sh_formatter = logging.Formatter(fmt='%(asctime)s %(process)d %(name)s %(levelname)s %(funcName)s %(message)s',
