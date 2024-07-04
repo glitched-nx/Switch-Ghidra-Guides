@@ -1,21 +1,42 @@
 import re
+import sys
+import argparse
+import logging
+import os
 
-def get_build_id():
-    with open('uncompressed_ssl.nso0', 'rb') as f:
-        f.seek(0x40)
-        return(f.read(0x14).hex().upper())
+import modules
 
-with open('uncompressed_ssl.nso0', 'rb') as fi:
-    read_data = fi.read()
-    result1 = re.search(rb'\x6a\x00\x80\xd2', read_data)
-    result23 = re.search(rb'\x24\x09\x43\x7a\xa0\x00\x00\x54', read_data)
-    result4 = re.search(rb'\x88\x16\x00\x12', read_data)
-    patch1 = '%08X%s%s' % (result1.start(), '0001', '0A')
-    patch2 = '%08X%s%s' % (result23.end() - 4, '0002', '1000')
-    patch3 = '%08X%s%s' % (result23.end() - 1, '0001', '14')
-    patch4 = '%08X%s%s' % (result4.end(), '0004', '08008052')
-    text_file = open(get_build_id() + '.ips', 'wb')
-    print('ssl build-id: ' + get_build_id())
-    print('disable_ca_verification offsets and patches at: ' + patch1 + patch2 + patch3 + patch4)
-    text_file.write(bytes.fromhex(str(f'4950533332' + patch1 + patch2 + patch3 + patch4 + '45454F46')))
-    text_file.close()
+
+def main():
+    logger_interface.info('Extracting ROMFS BootImagePackage from provided firmware files.')
+    os.system(f'{modules.hactoolnet} --keyset {args.prod_keys} --intype switchfs --raw {args.firmware} --title 0100000000000024 --exefsdir 0100000000000024/exefs/')
+    os.system(f'{modules.hactool} --keyset {args.prod_keys} --intype nso0 --raw 0100000000000024/exefs/main --uncompressed 0100000000000024/exefs/uncompressed_ssl.nso0')
+
+    with open('0100000000000024/exefs/uncompressed_ssl.nso0', 'rb') as fi:
+        read_data = fi.read()
+        result1 = re.search(rb'\x6a\x00\x80\xd2', read_data)
+        result23 = re.search(rb'\x24\x09\x43\x7a\xa0\x00\x00\x54', read_data)
+        result4 = re.search(rb'\x88\x16\x00\x12', read_data)
+        ips_patch1 = '%08X%s%s' % (result1.start(), '0001', '0A')
+        ips_patch2 = '%08X%s%s' % (result23.end() - 4, '0002', '1000')
+        ips_patch3 = '%08X%s%s' % (result23.end() - 1, '0001', '14')
+        ips_patch4 = '%08X%s%s' % (result4.end(), '0004', '08008052')
+
+        ips_header = b'IPS32'.hex()
+        ips_footer = b'EEOF'.hex()
+        ips_hash = modules.get_build_id(fi)
+        logger_interface.info('IPS patch hash %s',ips_hash )
+        with open (f'./patches/atmosphere/exefs_patches/disable_ca_verification/{ips_hash}.ips', 'wb'):
+            text_file.write(bytes.fromhex(ips_header + ips_patch1 + ips_patch2 + ips_patch3 + ips_patch4 + ips_footer))
+        logger_interface.info('Disable CA Verification patch done!')
+
+
+if __name__ == "__main__":
+    argParser = argparse.ArgumentParser()
+    argParser.add_argument("-f", "--firmware", help="firmware folder", dest="firmware", type=str, default="./firmware")
+    argParser.add_argument("-k", "--keys", help="keyfile to use", dest="prod_keys", type=str, default="./prod.keys")
+    args = argParser.parse_args()
+
+    logger_interface = logging.getLogger('keygen')
+    modules.logging_configuration(logger_interface)
+    sys.exit(main())
