@@ -30,6 +30,8 @@ def main():
             text_file.write(bytes.fromhex(ips_header + ips_patch1 + ips_patch2 + ips_patch3 + ips_patch4 + ips_footer))
         logger_interface.info('Disable CA Verification patch done!')
 
+    shutil.rmtree('0100000000000024')
+
 
 if __name__ == "__main__":
     argParser = argparse.ArgumentParser()
