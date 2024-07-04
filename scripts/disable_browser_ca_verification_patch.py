@@ -1,27 +1,47 @@
 import re
+import sys
+import argparse
+import logging
+import os
 import lz4.block
+import io
 
-#18.0.0 romfs/nro/netfront/core_2/default/cfi_enabled/webkit_wkc.nro.lz4
-with open('webkit_wkc.nro.lz4', 'rb') as file:
-    input_data = file.read()
-    decompressed = lz4.block.decompress(input_data)
-    decompressed_browser_file = open('uncompressed_browser_ssl.nro', 'wb')
-    decompressed_browser_file.write(decompressed)
-    decompressed_browser_file.close()
+import modules
 
-    
-def get_build_id():
-    with open('uncompressed_browser_ssl.nro', 'rb') as f:
-        f.seek(0x40)
-        return(f.read(0x10).hex().upper())
 
-with open('uncompressed_browser_ssl.nro', 'rb') as fi:
-    read_data = fi.read()
-    result = re.search(rb'\x72\x48\x00\x80\x52\xe2\x13\x88\x1a', read_data)
-    patch1 = '%08X%s%s' % (result.start() + 0x1, '0004', 'E8031F2A')
-    patch2 = '%08X%s%s' % (result.end(), '0001', '1F')
-    text_file = open(get_build_id() + '.ips', 'wb')
-    print('browser-ssl build-id: ' + get_build_id())
-    print('disable_browser_ca_verification offsets and patches at: ' + patch1 + patch2)
-    text_file.write(bytes.fromhex(str(f'4950533332' + patch1 + patch2 + '45454F46')))
-    text_file.close()
+def main():
+    logger_interface.info('Extracting ROMFS BootImagePackage from provided firmware files.')
+    os.system(f'{modules.hactoolnet} --keyset {args.prod_keys} --intype switchfs --raw {args.firmware} --title 0100000000000803 --romfsdir 0100000000000803/romfs/')
+
+    with open('0100000000000803/romfs/nro/netfront/core_2/default/cfi_enabled/webkit_wkc.nro.lz4', 'rb') as file:
+        input_data = file.read()
+        decompressed = lz4.block.decompress(input_data)
+
+    with open('0100000000000803/romfs/uncompressed_browser_ssl.nro', 'wb') as decompressed_browser_file:
+        decompressed_browser_file.write(decompressed)
+
+    result = re.search(rb'\x72\x48\x00\x80\x52\xe2\x13\x88\x1a', decompressed)
+    ips_patch1 = '%08X%s%s' % (result.start() + 0x1, '0004', 'E8031F2A')
+    ips_patch2 = '%08X%s%s' % (result.end(), '0001', '1F')
+
+    ips_header = b'IPS32'.hex()
+    ips_footer = b'EEOF'.hex()
+    ips_hash = modules.get_build_id(io.BytesIO(decompressed))
+    logger_interface.info('IPS patch hash %s',ips_hash )
+
+    with open(f'./patches/atmosphere/nro_patches/disable_browser_ca_verification/{ips_hash}.ips', 'wb') as text_file:
+        text_file.write(bytes.fromhex(ips_header + ips_patch1 + ips_patch2 + ips_footer))
+    logger_interface.info('Disable CA Verification patch done!')
+
+    shutil.rmtree('0100000000000024')
+
+
+if __name__ == "__main__":
+    argParser = argparse.ArgumentParser()
+    argParser.add_argument("-f", "--firmware", help="firmware folder", dest="firmware", type=str, default="./firmware")
+    argParser.add_argument("-k", "--keys", help="keyfile to use", dest="prod_keys", type=str, default="./prod.keys")
+    args = argParser.parse_args()
+
+    logger_interface = logging.getLogger('keygen')
+    modules.logging_configuration(logger_interface)
+    sys.exit(main())
