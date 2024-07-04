@@ -26,7 +26,7 @@ def main():
         ips_footer = b'EEOF'.hex()
         ips_hash = modules.get_build_id(fi)
         logger_interface.info('IPS patch hash %s',ips_hash )
-        with open (f'./patches/atmosphere/exefs_patches/disable_ca_verification/{ips_hash}.ips', 'wb'):
+        with open (f'./patches/atmosphere/exefs_patches/disable_ca_verification/{ips_hash}.ips', 'wb') as text_file:
             text_file.write(bytes.fromhex(ips_header + ips_patch1 + ips_patch2 + ips_patch3 + ips_patch4 + ips_footer))
         logger_interface.info('Disable CA Verification patch done!')
 
