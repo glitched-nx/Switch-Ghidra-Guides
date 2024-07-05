@@ -9,10 +9,10 @@ import modules
 
 def main():
     logger_interface.info('Extracting ROMFS BootImagePackage from provided firmware files.')
-    os.system(f'{modules.hactoolnet} --keyset {args.prod_keys} --intype switchfs --raw {args.firmware} --title 0100000000000024 --exefsdir 0100000000000024/exefs/')
-    os.system(f'{modules.hactool} --keyset {args.prod_keys} --intype nso0 --raw 0100000000000024/exefs/main --uncompressed 0100000000000024/exefs/uncompressed_ssl.nso0')
+    os.system(f'{modules.hactoolnet} --keyset {args.prod_keys} --intype switchfs --raw {args.firmware} --title 0100000000000024 --exefsdir titleid/0100000000000024/exefs/')
+    os.system(f'{modules.hactool} --keyset {args.prod_keys} --intype nso0 --raw titleid/0100000000000024/exefs/main --uncompressed titleid/0100000000000024/exefs/uncompressed_ssl.nso0')
 
-    with open('0100000000000024/exefs/uncompressed_ssl.nso0', 'rb') as fi:
+    with open('titleid/0100000000000024/exefs/uncompressed_ssl.nso0', 'rb') as fi:
         read_data = fi.read()
         result1 = re.search(rb'\x6a\x00\x80\xd2', read_data)
         result23 = re.search(rb'\x24\x09\x43\x7a\xa0\x00\x00\x54', read_data)
@@ -22,15 +22,13 @@ def main():
         ips_patch3 = '%08X%s%s' % (result23.end() - 1, '0001', '14')
         ips_patch4 = '%08X%s%s' % (result4.end(), '0004', '08008052')
 
-        ips_header = b'IPS32'.hex()
-        ips_footer = b'EEOF'.hex()
         ips_hash = modules.get_build_id(fi)
         logger_interface.info('IPS patch hash %s',ips_hash )
         with open (f'./patches/atmosphere/exefs_patches/disable_ca_verification/{ips_hash}.ips', 'wb') as text_file:
-            text_file.write(bytes.fromhex(ips_header + ips_patch1 + ips_patch2 + ips_patch3 + ips_patch4 + ips_footer))
+            text_file.write(bytes.fromhex(modules.IPS32_HEADER + ips_patch1 + ips_patch2 + ips_patch3 + ips_patch4 + modules.IPS32_FOOTER))
         logger_interface.info('Disable CA Verification patch done!')
 
-    shutil.rmtree('0100000000000024')
+    shutil.rmtree('titleid')
 
 
 if __name__ == "__main__":
