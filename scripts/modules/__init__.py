@@ -1,5 +1,22 @@
 import logging
 import platform
+import hashlib
+import shutil
+
+
+IPS_HEADER = b'PATCH'.hex()
+IPS_FOOTER = b'EOF'.hex()
+IPS32_HEADER  = b'IPS32'.hex()
+IPS32_FOOTER  = b'EEOF'.hex()
+ES_PATCH_DIR = 'patches/atmosphere/exefs_patches/es_patches/'
+NIFM_CTEST_PATCH_DIR = 'patches/atmosphere/exefs_patches/nifm_ctest/'
+NIM_PATCH_DIR = 'patches/atmosphere/exefs_patches/ams_blanker_fix/'
+
+HEKATE_FS_FILE = 'hekate_patches/fs_patches.ini'
+HEKATE_LOADER_FILE = 'hekate_patches/loader_patches.ini'
+HEKATE_HEADER_FILE = 'hekate_patches/header.ini'
+HEKATE_PATCH_FILE = 'patches/bootloader/patches.ini'
+
 
 def logging_configuration(logger):
     sh_formatter = logging.Formatter(fmt='%(asctime)s %(process)d %(name)s %(levelname)s %(funcName)s %(message)s',
