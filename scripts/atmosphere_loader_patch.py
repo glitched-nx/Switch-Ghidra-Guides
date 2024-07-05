@@ -73,23 +73,20 @@ def main():
         dst_data_hex='00'
         logger_interface.info('\nHEKATE LOADER HASH: %s\nHEKATE LOADER OFFSET: %s',
                               hash[:16], offset_hex_0x)
-        with open('./hekate_patches/loader_patches.ini', 'a') as loader_hekate:
-            loader_hekate.write('\n')
+        with open(modules.HEKATE_LOADER_FILE, 'a') as loader_hekate:
             loader_hekate.write(f'#Loader Atmosphere-{atmosphere_version}-{atmosphere_hash}\n')
             loader_hekate.write(f'[Loader:{hash[:16]}]\n')
             loader_hekate.write(f'.nosigchk=0:{offset_hex_0x}:{length_hex_0x}:{src_data_hex},{dst_data_hex}\n')
         logger_interface.info('loader_patches.ini OK')
 
 
-        ips_header = b'PATCH'.hex()
         ips_offset = f'{result.end():06X}'
         ips_data_size = f'{1:04X}'
         ips_data = '00'
-        ips_footer = b'EOF'.hex()
         logger_interface.info('\nIPS LOADER HASH: %s\nIPS LOADER OFFSET: %s',
                               hash, ips_offset)
         with open('./patches/atmosphere/kip_patches/loader_patches/%s.ips' % hash, 'wb') as ips_file:
-            ips_file.write(bytes.fromhex(ips_header + ips_offset + ips_data_size + ips_data + ips_footer))
+            ips_file.write(bytes.fromhex(modules.IPS_HEADER + ips_offset + ips_data_size + ips_data + modules.IPS_FOOTER))
         logger_interface.info('%s.ips OK', hash)
 
     with open('./patches/bootloader/patches.ini', 'wb') as outfile:
