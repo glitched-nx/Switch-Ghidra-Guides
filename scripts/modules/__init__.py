@@ -53,6 +53,13 @@ def check_key_file(file_path):
     return result
 
 
+def pack_hekate_patch():
+    with open(HEKATE_PATCH_FILE, 'wb') as outfile:
+        for filename in [HEKATE_HEADER_FILE, HEKATE_FS_FILE, HEKATE_LOADER_FILE]:
+            with open(filename, 'rb') as readfile:
+                shutil.copyfileobj(readfile, outfile)
+
+
 
 if platform.system() == "Windows":
     hactoolnet = "./tools/hactoolnet-windows.exe"
