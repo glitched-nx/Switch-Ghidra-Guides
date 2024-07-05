@@ -28,6 +28,7 @@ def logging_configuration(logger):
     logger.setLevel(logging.DEBUG)
     logger.addHandler(sh)
 
+
 def get_build_id(file_object):
     file_object.seek(0x40)
     return(file_object.read(0x14).hex().upper())
