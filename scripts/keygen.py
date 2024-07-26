@@ -44,6 +44,14 @@ def main():
             master_kek_source = f'mariko_master_kek_source_{incremented_revision} = {master_kek_source_key}'
 
     os.system(f'{modules.hactoolnet} --keyset "temp.keys" --intype keygen --outdir new-keys/')
+
+    os.system(f'{modules.hactoolnet} --keyset {args.prod_keys} --intype switchfs {args.firmware} --title 0100000000000809 --romfsdir titleid/0100000000000809/romfs/')
+    with open(f'titleid/0100000000000809/romfs/file', 'rb') as get_version:
+            byte_alignment = get_version.seek(0x68)
+            read_version_number = get_version.read(0x6).hex().upper()
+            version = (bytes.fromhex(read_version_number).decode('utf-8'))
+            fork_version = version.replace('.', '_')
+            logger_interface.info("Firmware version number is: %s", version)
     logger_interface.info('Keygen completed!')
 
     shutil.rmtree('titleid')
