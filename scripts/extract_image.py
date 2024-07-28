@@ -33,6 +33,7 @@ def extract_firmware_logo():
         zb = 4
         logo_pattern = re.compile(b'\x00'*zb+b'\x00\x00\x00\xFF\x00\x00\x00\xFF')
         start_offset = logo_pattern.search(read_data).start() + 0x1*zb
+        logger_interface.info('Offset: %s', start_offset)
         end_offset = start_offset + (308 * 350 * 4)
         with open('logo.data', 'wb') as logo_object:
             logo_object.write(read_data[start_offset:end_offset])
