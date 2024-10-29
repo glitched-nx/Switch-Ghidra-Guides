@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
 import re
-import subprocess
 import shutil
 import hashlib
 import os
 import argparse
-import platform
 import sys
 import logging
 
@@ -20,11 +18,11 @@ def main():
 
     os.system(f'{modules.hactoolnet} --keyset {args.prod_keys} --intype switchfs {args.firmware} --title 0100000000000809 --romfsdir titleid/0100000000000809/romfs/')
     with open(f'titleid/0100000000000809/romfs/file', 'rb') as get_version:
-            get_version.seek(0x68)
-            read_version_number = get_version.read(0x6).hex().upper()
-            version = (bytes.fromhex(read_version_number).decode('utf-8'))
-            # fork_version = version.replace('.', '_')
-            logger_interface.info("Firmware version number is: %s", version)
+        get_version.seek(0x68)
+        read_version_number = get_version.read(0x6).hex().upper()
+        version = (bytes.fromhex(read_version_number).decode('utf-8'))
+        # fork_version = version.replace('.', '_')
+        logger_interface.info("Firmware version number is: %s", version)
 
     with open('0100000000000819/romfs/a/pkg1/Decrypted.bin', 'rb') as decrypted_bin:
         decrypted_bin.seek(0x150)
@@ -103,7 +101,7 @@ def main():
                 offset = '%06X' % (result.start() - 0x100)
                 with open(os.path.join(modules.NIFM_CTEST_PATCH_DIR, nifm_patch), 'wb') as text_file:
                     text_file.write(bytes.fromhex(modules.IPS_HEADER + patch + modules.IPS_FOOTER))
-                logger_interface.info('%s:\nNIFM build-id: %s\nNIFM offset and patch at: %s', version, nifm_patch, patch)
+                logger_interface.info('%s:\nNIFM build-id: %s\nNIFM offset and patch at: %s\nOffset: %s', version, nifm_patch, patch, offset)
 
 
     with open(f'{nimuncompressed}', 'rb') as decompressed_nim_nso:
@@ -124,6 +122,8 @@ def main():
                     with open(modules.NIM_PATCH_DIR + nim_patch, 'wb') as text_file:
                         text_file.write(bytes.fromhex(modules.IPS_HEADER + patch + modules.IPS_FOOTER))
                     logger_interface.info('%s:\nNIM build-id: %s\nNIM offset and patch at: %s', version, nifm_patch, patch)
+
+        fspattern1 = fsoffset1 = fspattern2 = fsoffset2 = bytes
         if incremented_revision < 11:
             #below 11.0.0 == 10.0.0
             fspattern1 = rb'.{2}\x00\x36.{7}\x71.{2}\x00\x54.{2}\x48\x39'
@@ -135,7 +135,7 @@ def main():
 
         if incremented_revision < 18:
             #below 19.0.0
-            fspattern2 = rb'\x40\xf9.{3}\x94\x08.\x00\x12.\x05\x00\x71' 
+            fspattern2 = rb'\x40\xf9.{3}\x94\x08.\x00\x12.\x05\x00\x71'
             fsoffset2 = 0x2
         else:
             #above 19.0.0
@@ -162,12 +162,12 @@ def main():
                 patch1 = '%06X%s%s' % (result1.start() + 0x2, '0004', '1F2003D5')
                 patch2 = '%06X%s%s' % (result2.start() + fsoffset2, '0004', 'E0031F2A')
                 logger_interface.info('%s\nFirst FS-FAT32 offset and patch at: %s\nSecond FS-FAT32 offset and patch at: %s\nFS-FAT32 SHA256 hash: %s', version, patch1, patch2, fat32hash)
-                with open(modules.HEKATE_FS_FILE, 'a') as fat32_hekate:
+                with open(modules.HEKATE_FS_FILE, 'a', encoding='utf-8') as fat32_hekate:
                     fat32_hekate.write(f'#FS {version}-fat32\n')
                     fat32_hekate.write(f'[FS:{fat32hash[:16]}]\n')
-                    byte_alignment = fat32f.seek(result1.start() + fsoffset1)
+                    fat32f.seek(result1.start() + fsoffset1)
                     fat32_hekate.write('.nosigchk=0:0x' + '%06X' % (result1.start() + fsoffset1 - 0x100) + f':0x4:{fat32f.read(0x4).hex().upper()},1F2003D5\n')
-                    byte_alignment = fat32f.seek(result2.start() + fsoffset2)
+                    fat32f.seek(result2.start() + fsoffset2)
                     fat32_hekate.write('.nosigchk=0:0x' + '%06X' % (result2.start() + fsoffset2 - 0x100) + f':0x4:{fat32f.read(0x4).hex().upper()},E0031F2A\n')
                 logger_interface.info('%s:\nFS-FAT32 hash %s\n№1 FS-FAT32 offset and patch at %s\n№2 FS-FAT32 offset and patch at %s', version, fat32hash[:16], f'{result1.end()-0x100:06X}', f'{result2.start()-0x104:06X}')
 
@@ -187,12 +187,12 @@ def main():
                 patch1 = '%06X%s%s' % (result1.end(), '0004', '1F2003D5')
                 patch2 = '%06X%s%s' % (result2.start() - 0x8, '0004', 'E0031F2A')
                 logger_interface.info('%s\nFirst FS-ExFAT offset and patch at: %s\nSecond FS-ExFAT offset and patch at: %s\nFS-ExFAT SHA256 hash: %s', version, patch1, patch2, exfathash)
-                with open(modules.HEKATE_FS_FILE, 'a') as exfat_hekate:
+                with open(modules.HEKATE_FS_FILE, 'a', encoding='utf-8') as exfat_hekate:
                     exfat_hekate.write(f'#FS {version}-exfat\n')
                     exfat_hekate.write(f'[FS:{exfathash[:16]}]\n')
-                    byte_alignment = exfatf.seek(result1.start() + fsoffset1)
+                    exfatf.seek(result1.start() + fsoffset1)
                     exfat_hekate.write('.nosigchk=0:0x' + '%06X' % (result1.start() + fsoffset1 - 0x100) + f':0x4:{exfatf.read(0x4).hex().upper()},1F2003D5\n')
-                    byte_alignment = exfatf.seek(result2.start() + fsoffset2)
+                    exfatf.seek(result2.start() + fsoffset2)
                     exfat_hekate.write('.nosigchk=0:0x' + '%06X' % (result2.start() + fsoffset2 - 0x100) + f':0x4:{exfatf.read(0x4).hex().upper()},E0031F2A\n')
                 logger_interface.info('%s:\nFS-ExFAT hash %s\n№1 FS-FAT32 offset and patch at %s\n№2 FS-ExFAT offset and patch at %s', version, exfathash[:16], f'{result1.end()-0x100:06X}', f'{result2.start()-0x104:06X}')
 
