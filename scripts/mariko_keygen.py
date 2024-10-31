@@ -34,8 +34,10 @@ else:
 
 if platform.system() == "Windows":
     hactoolnet = "tools/hactoolnet-windows.exe"
+    hshell = False
 elif platform.system() == "Linux":
     hactoolnet = "tools/hactoolnet-linux"
+    hshell = True
 elif platform.system() == "MacOS":
     hactoolnet = "tools/hactoolnet-macos"
 else:
@@ -47,8 +49,8 @@ with open('temp.keys', 'a') as temp_keys:
     temp_keys.write(b64decode('bWFyaWtvX2tlayAgICAgICAgICAgICAgICAgICAgICAgID0gNDEzMEI4Qjg0MkREN0NEMkVBOEZENTBEM0Q0OEI3N0M=').decode('utf-8') + '\n')
     temp_keys.write(b64decode('bWFzdGVyX2tleV8wMCAgICAgICAgICAgICAgICAgICAgID0gQzJDQUFGRjA4OUI5QUVENTU2OTQ4NzYwNTUyNzFDN0Q=').decode('utf-8') + '\n')
     temp_keys.close()
-    subprocess.run(f'{hactoolnet} --keyset temp.keys -t switchfs {firmware} --title 0100000000000819 --romfsdir 0100000000000819/romfs/', stdout = subprocess.DEVNULL)
-    subprocess.run(f'{hactoolnet} --keyset temp.keys -t pk11 0100000000000819/romfs/a/package1 --outdir 0100000000000819/romfs/a/pkg1', stdout = subprocess.DEVNULL)
+    subprocess.run(f'{hactoolnet} --keyset temp.keys -t switchfs {firmware} --title 0100000000000819 --romfsdir 0100000000000819/romfs/', shell = hshell, stdout = subprocess.DEVNULL)
+    subprocess.run(f'{hactoolnet} --keyset temp.keys -t pk11 0100000000000819/romfs/a/package1 --outdir 0100000000000819/romfs/a/pkg1', shell = hshell, stdout = subprocess.DEVNULL)
     with open('0100000000000819/romfs/a/pkg1/Decrypted.bin', 'rb') as decrypted_bin:
         secmon_data = decrypted_bin.read()
         result = re.search(b'\x4F\x59\x41\x53\x55\x4D\x49', secmon_data)
@@ -73,13 +75,13 @@ with open('temp.keys', 'a') as temp_keys:
 
         with open(keys, 'w') as new_prod_keys:
             if dev == "True":
-                subprocess.run(f'{hactoolnet} --dev --keyset temp.keys -t keygen', stdout=new_prod_keys)
+                subprocess.run(f'{hactoolnet} --dev --keyset temp.keys -t keygen', shell = hshell, stdout=new_prod_keys)
                 print(f'# You just generated a dev keyset, which are only useful for developer ncas written with nnsdk keyset, and they have been output to {keys}')
             elif dev == "False":
-                subprocess.run(f'{hactoolnet} --keyset temp.keys -t keygen', stdout=new_prod_keys)
+                subprocess.run(f'{hactoolnet} --keyset temp.keys -t keygen', shell = hshell, stdout=new_prod_keys)
             new_prod_keys.close()
             os.remove('temp.keys')
-        subprocess.run(f'{hactoolnet} --keyset {keys} -t switchfs {firmware} --title 0100000000000809 --romfsdir 0100000000000809/romfs/', stdout = subprocess.DEVNULL)
+        subprocess.run(f'{hactoolnet} --keyset {keys} -t switchfs {firmware} --title 0100000000000809 --romfsdir 0100000000000809/romfs/', shell = hshell, stdout = subprocess.DEVNULL)
         with open(f'0100000000000809/romfs/file', 'rb') as get_version:
                 byte_alignment = get_version.seek(0x68)
                 read_version_number = get_version.read(0x6).hex().upper()
