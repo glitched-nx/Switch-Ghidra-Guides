@@ -1,4 +1,17 @@
 import aes128
+import argparse
+from base64 import b64decode
+
+argParser = argparse.ArgumentParser()
+argParser.add_argument("-k", "--keys", help="Where you want the keys to be saved")
+args = argParser.parse_args()
+prod_keys = "%s" % args.keys
+
+
+if prod_keys == "None":
+    keys = "prod.keys"
+else: 
+    keys = prod_keys
 
 def decrypt(key, decryption_key):
 	crypto = aes128.AESECB(decryption_key)
@@ -20,7 +33,7 @@ def generateKek(src, masterKey, kek_seed, key_seed):
 	else:
 		return src_kek
 
-mariko_kek = bytes.fromhex("FILL-IN-MARIKO_KEK") # substitute with mariko_kek, sha256 string: 53be3a736bdb7ff26868ce73e9e5b8ad3b652039be75dfce89a91d11a4c69866
+mariko_kek = bytes.fromhex(b64decode('NDEzMEI4Qjg0MkREN0NEMkVBOEZENTBEM0Q0OEI3N0M=').decode('utf-8'))
 
 # various sources
 master_key_source = bytes.fromhex("D8A2410AC6C59001C61D6A267C513F3C") # persistent from 1.0.0
@@ -57,51 +70,84 @@ mariko_master_kek_sources = [
 	mariko_master_kek_source_11, mariko_master_kek_source_12
 ]
 
-# generate master_kek_%% from all provided mariko_master_kek_sources
-master_keks = [decrypt(i, mariko_kek) for i in mariko_master_kek_sources]
-count = 0x4
-for i in master_keks:
-	count = count + 0x1
-	print(f'master_kek_{hex(count)[2:].zfill(2)} = '  + (i.hex().upper()))
+with open(keys, 'w') as manual_crypto:	
+	manual_crypto.write(f'master_key_source = ' + f'{master_key_source.hex().upper()}\n')
+	manual_crypto.write(f'package2_key_source= ' + f'{package2_key_source.hex().upper()}\n')
+	manual_crypto.write(f'key_area_key_system_source = ' + f'{key_area_key_system_source.hex().upper()}\n')
+	manual_crypto.write(f'key_area_key_application_source = ' + f'{key_area_key_application_source.hex().upper()}\n')
+	manual_crypto.write(f'key_area_key_ocean_source = ' + f'{key_area_key_ocean_source.hex().upper()}\n')
+	manual_crypto.write(f'aes_kek_generation_sourcee = ' + f'{aes_kek_generation_source.hex().upper()}\n')
+	manual_crypto.write(f'aes_key_generation_source = ' + f'{aes_key_generation_source.hex().upper()}\n')
+	manual_crypto.write(f'package2_key_source = ' + f'{package2_key_source.hex().upper()}\n')
+	manual_crypto.write(f'titlekek_source = ' + f'{titlekek_source.hex().upper()}\n')
 
-# generate master_key_%% from all provided master_kek_%% using master_key_source
-master_keys = [decrypt(master_key_source, i) for i in master_keks]
-count = 0x4
-for i in master_keys:
-	count = count + 0x1
-	print(f'master_key_{hex(count)[2:].zfill(2)} = '  + (i.hex().upper()))
+	# Write mariko_master_kek_sources
+	count = 0x4
+	for i in mariko_master_kek_sources:
+		count = count + 0x1
+		keys = f'mariko_master_kek_source_{hex(count)[2:].zfill(2)} = '  + (i.hex().upper())
+		manual_crypto.write(f'{keys}\n')
+		print(keys)
 
-# generate package2_key_%% from all provided master_key_%% using package2_key_source
-package2_key = [decrypt(package2_key_source, i) for i in master_keys]
-count = 0x4
-for i in package2_key:
-	count = count + 0x1
-	print(f'package2_key_{hex(count)[2:].zfill(2)} = '  + (i.hex().upper()))
+	# generate master_kek_%% from all provided mariko_master_kek_sources
+	master_keks = [decrypt(i, mariko_kek) for i in mariko_master_kek_sources]
+	count = 0x4
+	for i in master_keks:
+		count = count + 0x1
+		keys = f'master_kek_{hex(count)[2:].zfill(2)} = '  + (i.hex().upper())
+		manual_crypto.write(f'{keys}\n')
+		print(keys)
 
-# generate title_kek_%% from all provided master_key_%% using titlekek_source
-titlekek = [decrypt(titlekek_source, i) for i in master_keys]
-count = 0x4
-for i in titlekek:
-	count = count + 0x1
-	print(f'titlekek_{hex(count)[2:].zfill(2)} = '  + (i.hex().upper()))
+	# generate master_key_%% from all provided master_kek_%% using master_key_source
+	master_keys = [decrypt(master_key_source, i) for i in master_keks]
+	count = 0x4
+	for i in master_keys:
+		count = count + 0x1
+		keys = f'master_key_{hex(count)[2:].zfill(2)} = '  + (i.hex().upper())
+		manual_crypto.write(f'{keys}\n')
+		print(keys)
 
-# generate key_area_key_application_%% from all provided master_key_%% using key_area_key_application_source
-key_area_key_application = [generateKek(key_area_key_application_source, i, aes_kek_generation_source, aes_key_generation_source) for i in master_keys]
-count = 0x4
-for i in key_area_key_application:
-	count = count +0x1
-	print(f'key_area_key_application_{hex(count)[2:].zfill(2)} = '  + (i.hex().upper()))
+	# generate package2_key_%% from all provided master_key_%% using package2_key_source
+	package2_key = [decrypt(package2_key_source, i) for i in master_keys]
+	count = 0x4
+	for i in package2_key:
+		count = count + 0x1
+		keys = f'package2_key_{hex(count)[2:].zfill(2)} = '  + (i.hex().upper())
+		manual_crypto.write(f'{keys}\n')
+		print(keys)
 
-# generate key_area_key_ocean_%% from all provided master_key_%% using key_area_key_ocean_source
-key_area_key_ocean = [generateKek(key_area_key_ocean_source, i, aes_kek_generation_source, aes_key_generation_source) for i in master_keys]
-count = 0x4
-for i in key_area_key_ocean:
-	count = count +0x1
-	print(f'key_area_key_ocean_{hex(count)[2:].zfill(2)} = '  + (i.hex().upper()))
+	# generate title_kek_%% from all provided master_key_%% using titlekek_source
+	titlekek = [decrypt(titlekek_source, i) for i in master_keys]
+	count = 0x4
+	for i in titlekek:
+		count = count + 0x1
+		keys = f'titlekek_{hex(count)[2:].zfill(2)} = '  + (i.hex().upper())
+		manual_crypto.write(f'{keys}\n')
+		print(keys)
 
-# generate key_area_key_system_%% from all provided master_key_%% using key_area_key_system_source
-key_area_key_system = [generateKek(key_area_key_system_source, i, aes_kek_generation_source, aes_key_generation_source) for i in master_keys]
-count = 0x4
-for i in key_area_key_system:
-	count = count +0x1
-	print(f'key_area_key_system_{hex(count)[2:].zfill(2)} = '  + (i.hex().upper()))
+	# generate key_area_key_application_%% from all provided master_key_%% using key_area_key_application_source
+	key_area_key_application = [generateKek(key_area_key_application_source, i, aes_kek_generation_source, aes_key_generation_source) for i in master_keys]
+	count = 0x4
+	for i in key_area_key_application:
+		count = count +0x1
+		keys = f'key_area_key_application_{hex(count)[2:].zfill(2)} = '  + (i.hex().upper())
+		manual_crypto.write(f'{keys}\n')
+		print(keys)
+
+	# generate key_area_key_ocean_%% from all provided master_key_%% using key_area_key_ocean_source
+	key_area_key_ocean = [generateKek(key_area_key_ocean_source, i, aes_kek_generation_source, aes_key_generation_source) for i in master_keys]
+	count = 0x4
+	for i in key_area_key_ocean:
+		count = count +0x1
+		keys = f'key_area_key_ocean_{hex(count)[2:].zfill(2)} = '  + (i.hex().upper())
+		manual_crypto.write(f'{keys}\n')
+		print(keys)
+
+	# generate key_area_key_system_%% from all provided master_key_%% using key_area_key_system_source
+	key_area_key_system = [generateKek(key_area_key_system_source, i, aes_kek_generation_source, aes_key_generation_source) for i in master_keys]
+	count = 0x4
+	for i in key_area_key_system:
+		count = count +0x1
+		keys = f'key_area_key_system_{hex(count)[2:].zfill(2)} = '  + (i.hex().upper())
+		manual_crypto.write(f'{keys}\n')
+		print(keys)
