@@ -76,7 +76,7 @@ if not hactoolnet == False:
                 revision = decrypted_bin.read(0x01).hex().upper()
                 incremented_revision = int(revision) - 0x1
                 mariko_master_kek_source = f'mariko_master_kek_source_{incremented_revision}       = {mariko_master_kek_source_key}'
-                mariko_master_kek_source_dev = f'mariko_master_kek_source_{incremented_revision}       = {mariko_master_kek_source_dev_key}'
+                mariko_master_kek_source_dev = f'mariko_master_kek_source_dev_{incremented_revision}       = {mariko_master_kek_source_dev_key}'
                 decrypted_bin.close()
                 with open('temp.keys', 'a') as keygen:
                     keygen.write(f'\n')
@@ -95,21 +95,24 @@ if not hactoolnet == False:
                         subprocess.run(f'{hactoolnet} --keyset temp.keys -t keygen', shell = hshell, stdout=new_prod_keys)
                     new_prod_keys.close()
                     os.remove('temp.keys')
-                subprocess.run(f'{hactoolnet} --keyset {keys} -t switchfs {firmware} --title 0100000000000809 --romfsdir 0100000000000809/romfs/', shell = hshell, stdout = subprocess.DEVNULL)
-                with open(f'0100000000000809/romfs/file', 'rb') as get_version:
-                        byte_alignment = get_version.seek(0x68)
-                        read_version_number = get_version.read(0x6).hex().upper()
-                        version = (bytes.fromhex(read_version_number).decode('utf-8'))
-                        print(f'# Firmware version number generated keys for is: {version}')
-                        print(f'# key revision generated keys for ends with _{incremented_revision}')
-                        print(f'# Keygen completed and output to {keys}, exiting.')
-                shutil.rmtree('0100000000000819')
-                shutil.rmtree('0100000000000809')
-                if not os.path.exists(user_folder):
-                    os.makedirs(user_folder)
-                if not os.path.exists(user_keys):
-                    shutil.copy(keys, user_keys)
-                exit()
+                if dev == "False":
+                    subprocess.run(f'{hactoolnet} --keyset {keys} -t switchfs {firmware} --title 0100000000000809 --romfsdir 0100000000000809/romfs/', shell = hshell, stdout = subprocess.DEVNULL)
+                    with open(f'0100000000000809/romfs/file', 'rb') as get_version:
+                            byte_alignment = get_version.seek(0x68)
+                            read_version_number = get_version.read(0x6).hex().upper()
+                            version = (bytes.fromhex(read_version_number).decode('utf-8'))
+                            print(f'# Firmware version number generated keys for is: {version}')
+                            print(f'# key revision generated keys for ends with _{incremented_revision}')
+                            print(f'# Keygen completed and output to {keys}, exiting.')
+                    shutil.rmtree('0100000000000819')
+                    shutil.rmtree('0100000000000809')
+                    if not os.path.exists(user_folder):
+                        os.makedirs(user_folder)
+                    if not os.path.exists(user_keys):
+                        shutil.copy(keys, user_keys)
+                    exit()
+                elif dev == "True":
+                    exit()
 else:
     import aes128
 
