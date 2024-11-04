@@ -36,23 +36,22 @@ def generateKek(src, masterKey, kek_seed, key_seed):
 mariko_kek = bytes.fromhex(b64decode('NDEzMEI4Qjg0MkREN0NEMkVBOEZENTBEM0Q0OEI3N0M=').decode('utf-8'))
 
 # various sources
-master_key_source = bytes.fromhex("D8A2410AC6C59001C61D6A267C513F3C") # persistent from 1.0.0
-package2_key_source = bytes.fromhex("FB8B6A9C7900C849EFD24D854D30A0C7") # persistent from 1.0.0
-key_area_key_application_source = bytes.fromhex("7F59971E629F36A13098066F2144C30D") # persistent from 1.0.0
-key_area_key_ocean_source = bytes.fromhex("327D36085AD1758DAB4E6FBAA555D882") # persistent from 1.0.0
-key_area_key_system_source = bytes.fromhex("8745F1BBA6BE79647D048BA67B5FDA4A") # persistent from 1.0.0
-aes_kek_generation_source = bytes.fromhex("4D870986C45D20722FBA1053DA92E8A9") # persistent from 1.0.0
-aes_key_generation_source = bytes.fromhex("89615EE05C31B6805FE58F3DA24F7AA8") # persistent from 1.0.0
-package2_key_source = bytes.fromhex("FB8B6A9C7900C849EFD24D854D30A0C7") # persistent from 1.0.0
-titlekek_source = bytes.fromhex("1EDC7B3B60E6B4D878B81715985E629B") # persistent from 1.0.0
+master_key_source = bytes.fromhex("D8A2410AC6C59001C61D6A267C513F3C") # https://github.com/Atmosphere-NX/Atmosphere/blob/master/fusee/program/source/fusee_key_derivation.cpp#L44
+package2_key_source = bytes.fromhex("FB8B6A9C7900C849EFD24D854D30A0C7") # https://github.com/Atmosphere-NX/Atmosphere/blob/9f8d17b9e6079eb421e194b81bed8a3de357c10d/exosphere/program/source/boot/secmon_boot_key_data.s#L76
+key_area_key_application_source = bytes.fromhex("7F59971E629F36A13098066F2144C30D") # https://github.com/Atmosphere-NX/Atmosphere/blob/master/libraries/libstratosphere/source/fssrv/fssrv_nca_crypto_configuration.cpp#L110
+key_area_key_ocean_source = bytes.fromhex("327D36085AD1758DAB4E6FBAA555D882") # https://github.com/Atmosphere-NX/Atmosphere/blob/master/libraries/libstratosphere/source/fssrv/fssrv_nca_crypto_configuration.cpp#L113
+key_area_key_system_source = bytes.fromhex("8745F1BBA6BE79647D048BA67B5FDA4A") # https://github.com/Atmosphere-NX/Atmosphere/blob/master/libraries/libstratosphere/source/fssrv/fssrv_nca_crypto_configuration.cpp#L116
+aes_kek_generation_source = bytes.fromhex("4D870986C45D20722FBA1053DA92E8A9") # https://github.com/Atmosphere-NX/Atmosphere/blob/master/fusee/program/source/fusee_key_derivation.cpp#L224
+aes_key_generation_source = bytes.fromhex("89615EE05C31B6805FE58F3DA24F7AA8") # https://github.com/Atmosphere-NX/Atmosphere/blob/master/fusee/program/source/fusee_key_derivation.cpp#L228
+titlekek_source = bytes.fromhex("1EDC7B3B60E6B4D878B81715985E629B") # https://github.com/Atmosphere-NX/Atmosphere/blob/master/exosphere/program/source/smc/secmon_smc_aes.cpp#L162
 
-# master key vectors
-master_key_vector_00 = bytes.fromhex("0CF059AC85F62665E1E91955E6F2673D") # Zeroes encrypted with Master Key 00. */
-master_key_vector_01 = bytes.fromhex("294C04C8EB10ED9D516497FBF34D50DD") # Master key 00 encrypted with Master key 01. */
-master_key_vector_02 = bytes.fromhex("DECFEBEB10AE74D8AD7CF49E62E0E872") # Master key 01 encrypted with Master key 02. */
-master_key_vector_03 = bytes.fromhex("0A0DDF3422066CA4E6B1EC7185CA4E07") # Master key 02 encrypted with Master key 03. */
-master_key_vector_04 = bytes.fromhex("6E7D2DC30F59C8FA87A82ED5895EF3E9") # Master key 03 encrypted with Master key 04. */
-master_key_vector_05 = bytes.fromhex("EBF56F83619EF8FAE087D7A14E2536EE") # Master key 04 encrypted with Master key 05. */
+# master key sources
+master_key_source_00 = bytes.fromhex("0CF059AC85F62665E1E91955E6F2673D") # https://github.com/Atmosphere-NX/Atmosphere/blob/master/fusee/program/source/fusee_key_derivation.cpp#L117
+master_key_source_01 = bytes.fromhex("294C04C8EB10ED9D516497FBF34D50DD") # https://github.com/Atmosphere-NX/Atmosphere/blob/master/fusee/program/source/fusee_key_derivation.cpp#L118
+master_key_source_02 = bytes.fromhex("DECFEBEB10AE74D8AD7CF49E62E0E872") # https://github.com/Atmosphere-NX/Atmosphere/blob/master/fusee/program/source/fusee_key_derivation.cpp#L119
+master_key_source_03 = bytes.fromhex("0A0DDF3422066CA4E6B1EC7185CA4E07") # https://github.com/Atmosphere-NX/Atmosphere/blob/master/fusee/program/source/fusee_key_derivation.cpp#L120
+master_key_source_04 = bytes.fromhex("6E7D2DC30F59C8FA87A82ED5895EF3E9") # https://github.com/Atmosphere-NX/Atmosphere/blob/master/fusee/program/source/fusee_key_derivation.cpp#L121
+master_key_source_05 = bytes.fromhex("EBF56F83619EF8FAE087D7A14E2536EE") # https://github.com/Atmosphere-NX/Atmosphere/blob/master/fusee/program/source/fusee_key_derivation.cpp#L122
 
 # mariko master_kek_sources
 mariko_master_kek_source_05 = bytes.fromhex("77605AD2EE6EF83C3F72E2599DAC5E56")
@@ -68,7 +67,7 @@ mariko_master_kek_source_0e = bytes.fromhex("EC61BC821E0F5AC32B643F9DD619222D")
 mariko_master_kek_source_0f = bytes.fromhex("A5EC16391A3016082ECF096F5E7CEEA9")
 mariko_master_kek_source_10 = bytes.fromhex("8DEE9E11363A9B0A6AC7BBE9D103F780")
 mariko_master_kek_source_11 = bytes.fromhex("4F413C3BFB6A012A689F83E953BD16D2")
-mariko_master_kek_source_12 = bytes.fromhex("31BE25FBDBB4EE495C7705C2369F3480")
+mariko_master_kek_source_12 = bytes.fromhex("31BE25FBDBB4EE495C7705C2369F3480") # https://github.com/Atmosphere-NX/Atmosphere/blob/master/fusee/program/source/fusee_key_derivation.cpp#L26
 
 mariko_master_kek_sources = [
 	mariko_master_kek_source_05, mariko_master_kek_source_06, mariko_master_kek_source_07,
@@ -108,12 +107,12 @@ with open(keys, 'w') as manual_crypto:
 
 	# generate master_key_%% from all provided master_kek_%% using master_key_source
 	master_keys = [decrypt(master_key_source, i) for i in master_keks]
-	# generate master_key_00 to master_key_04 with master_key_vector_%%
-	master_key_04 = decrypt(master_key_vector_05, master_keys[0])
-	master_key_03 = decrypt(master_key_vector_04, master_key_04)
-	master_key_02 = decrypt(master_key_vector_03, master_key_03)
-	master_key_01 = decrypt(master_key_vector_02, master_key_02)
-	master_key_00 = decrypt(master_key_vector_01, master_key_01)
+	# generate master_key_00 to master_key_04 with master_key_source_%%
+	master_key_04 = decrypt(master_key_source_05, master_keys[0])
+	master_key_03 = decrypt(master_key_source_04, master_key_04)
+	master_key_02 = decrypt(master_key_source_03, master_key_03)
+	master_key_01 = decrypt(master_key_source_02, master_key_02)
+	master_key_00 = decrypt(master_key_source_01, master_key_01)
 	master_keys.insert(0, master_key_00)
 	master_keys.insert(1, master_key_01)
 	master_keys.insert(2, master_key_02)
