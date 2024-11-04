@@ -45,26 +45,26 @@ aes_kek_generation_source = bytes.fromhex("4D870986C45D20722FBA1053DA92E8A9") # 
 aes_key_generation_source = bytes.fromhex("89615EE05C31B6805FE58F3DA24F7AA8") # https://github.com/Atmosphere-NX/Atmosphere/blob/master/fusee/program/source/fusee_key_derivation.cpp#L228
 titlekek_source = bytes.fromhex("1EDC7B3B60E6B4D878B81715985E629B") # https://github.com/Atmosphere-NX/Atmosphere/blob/master/exosphere/program/source/smc/secmon_smc_aes.cpp#L162
 
-# master key dev sources
-master_key_source_dev_00 = bytes.fromhex("4622B4519A7EA77F62A11F8FC53ADBFE") #  }, /* Zeroes encrypted with Master Key 00. */
-master_key_source_dev_01 = bytes.fromhex("3933F931BAE4A7212CDDB7D8B44E3723") #  }, /* Master key 00 encrypted with Master key 01. */
-master_key_source_dev_02 = bytes.fromhex("9729B03243148CA685E95A949939AC5D") #  }, /* Master key 01 encrypted with Master key 02. */
-master_key_source_dev_03 = bytes.fromhex("2CCA9C311E07B002970AD803A2763FA3") #  }, /* Master key 02 encrypted with Master key 03. */
-master_key_source_dev_04 = bytes.fromhex("9B847614729452CB54929BC48C5B0FBA") #  }, /* Master key 03 encrypted with Master key 04. */
-master_key_source_dev_05 = bytes.fromhex("78D5F1203D16E9303227346FCFE027DC") #  }, /* Master key 04 encrypted with Master key 05. */
-master_key_source_dev_06 = bytes.fromhex("6FD2841D05EC40945F18B38109988D4E") #  }, /* Master key 05 encrypted with Master key 06. */
-master_key_source_dev_07 = bytes.fromhex("37AFAB357909D94829D2DBA5A5F53019") #  }, /* Master key 06 encrypted with Master key 07. */
-master_key_source_dev_08 = bytes.fromhex("ECE1468937FDD2158C3F2482EF496804") #  }, /* Master key 07 encrypted with Master key 08. */
-master_key_source_dev_09 = bytes.fromhex("433DC53BEF9102216154638A35E7CAEE") #  }, /* Master key 08 encrypted with Master key 09. */
-master_key_source_dev_0a = bytes.fromhex("6C2ECDB3346177F5F9B1DD6198193ED4") #  }, /* Master key 09 encrypted with Master key 0A. */
-master_key_source_dev_0b = bytes.fromhex("21886B109E83D652AB08DB6D39FF1C9C") #  }, /* Master key 0A encrypted with Master key 0B. */
-master_key_source_dev_0c = bytes.fromhex("8ACEC47FBE086188D3736451E2B65315") #  }, /* Master key 0B encrypted with Master key 0C. */
-master_key_source_dev_0d = bytes.fromhex("08E0F4BEAA6E5AC3A6BCFEB9E2A32412") #  }, /* Master key 0C encrypted with Master key 0D. */
-master_key_source_dev_0e = bytes.fromhex("D68098C0FAC713CB93D20B824CA17B8D") #  }, /* Master key 0D encrypted with Master key 0E. */
-master_key_source_dev_0f = bytes.fromhex("786619BD86E7C1099B6F92B2587DCF26") #  }, /* Master key 0E encrypted with Master key 0F. */
-master_key_source_dev_10 = bytes.fromhex("391E7EF87E73EA6FAF003AB4AAB8B759") #  }, /* Master key 0F encrypted with Master key 10. */
-master_key_source_dev_11 = bytes.fromhex("0C75391553EA8111A3E0DC3D0E76C6B8") #  }, /* Master key 10 encrypted with Master key 11. */
-master_key_source_dev_12 = bytes.fromhex("9064F9082988D4DC73A4A1139E5985A0") #  }, /* Master key 11 encrypted with Master key 12. */
+# master key dev sources https://github.com/Atmosphere-NX/Atmosphere/blob/master/fusee/program/source/fusee_key_derivation.cpp#L138-L157
+#master_key_source_dev_00 = bytes.fromhex("4622B4519A7EA77F62A11F8FC53ADBFE") # Zeroes encrypted with Master Key 00. */
+master_key_source_dev_01 = bytes.fromhex("3933F931BAE4A7212CDDB7D8B44E3723") # Master key 00 encrypted with Master key 01. */
+master_key_source_dev_02 = bytes.fromhex("9729B03243148CA685E95A949939AC5D") # Master key 01 encrypted with Master key 02. */
+master_key_source_dev_03 = bytes.fromhex("2CCA9C311E07B002970AD803A2763FA3") # Master key 02 encrypted with Master key 03. */
+master_key_source_dev_04 = bytes.fromhex("9B847614729452CB54929BC48C5B0FBA") # Master key 03 encrypted with Master key 04. */
+master_key_source_dev_05 = bytes.fromhex("78D5F1203D16E9303227346FCFE027DC") # Master key 04 encrypted with Master key 05. */
+master_key_source_dev_06 = bytes.fromhex("6FD2841D05EC40945F18B38109988D4E") # Master key 05 encrypted with Master key 06. */
+master_key_source_dev_07 = bytes.fromhex("37AFAB357909D94829D2DBA5A5F53019") # Master key 06 encrypted with Master key 07. */
+master_key_source_dev_08 = bytes.fromhex("ECE1468937FDD2158C3F2482EF496804") # Master key 07 encrypted with Master key 08. */
+master_key_source_dev_09 = bytes.fromhex("433DC53BEF9102216154638A35E7CAEE") # Master key 08 encrypted with Master key 09. */
+master_key_source_dev_0a = bytes.fromhex("6C2ECDB3346177F5F9B1DD6198193ED4") # Master key 09 encrypted with Master key 0A. */
+master_key_source_dev_0b = bytes.fromhex("21886B109E83D652AB08DB6D39FF1C9C") # Master key 0A encrypted with Master key 0B. */
+master_key_source_dev_0c = bytes.fromhex("8ACEC47FBE086188D3736451E2B65315") # Master key 0B encrypted with Master key 0C. */
+master_key_source_dev_0d = bytes.fromhex("08E0F4BEAA6E5AC3A6BCFEB9E2A32412") # Master key 0C encrypted with Master key 0D. */
+master_key_source_dev_0e = bytes.fromhex("D68098C0FAC713CB93D20B824CA17B8D") # Master key 0D encrypted with Master key 0E. */
+master_key_source_dev_0f = bytes.fromhex("786619BD86E7C1099B6F92B2587DCF26") # Master key 0E encrypted with Master key 0F. */
+master_key_source_dev_10 = bytes.fromhex("391E7EF87E73EA6FAF003AB4AAB8B759") # Master key 0F encrypted with Master key 10. */
+master_key_source_dev_11 = bytes.fromhex("0C75391553EA8111A3E0DC3D0E76C6B8") # Master key 10 encrypted with Master key 11. */
+master_key_source_dev_12 = bytes.fromhex("9064F9082988D4DC73A4A1139E5985A0") # Master key 11 encrypted with Master key 12. */
 
 # mariko master_kek_sources
 mariko_master_kek_source_dev = bytes.fromhex("657B11460EC2225DB9F1F500F93E1F70") # https://github.com/Atmosphere-NX/Atmosphere/blob/master/fusee/program/source/fusee_key_derivation.cpp#L31
@@ -124,7 +124,7 @@ with open(keys, 'w') as manual_crypto:
 		master_key_dev_12
 	]
 
-	count =  -0x1
+	count = -0x1
 	for i in master_keys:
 		count = count + 0x1
 		keys = f'master_key_dev_{hex(count)[2:].zfill(2)} = '  + (i.hex().upper())

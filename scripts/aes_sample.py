@@ -119,7 +119,7 @@ with open(keys, 'w') as manual_crypto:
 	master_keys.insert(3, master_key_03)
 	master_keys.insert(4, master_key_04)
 
-	count =  -0x1
+	count = -0x1
 	for i in master_keys:
 		count = count + 0x1
 		keys = f'master_key_{hex(count)[2:].zfill(2)} = '  + (i.hex().upper())
