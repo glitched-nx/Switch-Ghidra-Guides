@@ -144,7 +144,7 @@ else:
     aes_kek_generation_source = bytes.fromhex("4D870986C45D20722FBA1053DA92E8A9") # persistent from 1.0.0
     aes_key_generation_source = bytes.fromhex("89615EE05C31B6805FE58F3DA24F7AA8") # persistent from 1.0.0
     package2_key_source = bytes.fromhex("FB8B6A9C7900C849EFD24D854D30A0C7") # persistent from 1.0.0
-    titlekek_source= bytes.fromhex("1EDC7B3B60E6B4D878B81715985E629B") # persistent from 1.0.0
+    titlekek_source = bytes.fromhex("1EDC7B3B60E6B4D878B81715985E629B") # persistent from 1.0.0
 
     # master key vectors
     master_key_vector_00 = bytes.fromhex("0CF059AC85F62665E1E91955E6F2673D") # Zeroes encrypted with Master Key 00. */
