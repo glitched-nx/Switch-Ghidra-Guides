@@ -11,34 +11,37 @@ Das gesamte Material dient ausschließlich als Forschungsreferenz.
   - Die resultierenden "Patches" aus dieser Anleitung findest du unter https://github.com/misson20000/exefs_patches/tree/master/atmosphere/exefs_patches/nfim_ctest
 
 **Hinweis: Der erwähnte "Loader" bezieht sich auf die Re-Implementierung des "Atmosphere"-Projekts: https://github.com/Atmosphere-NX/Atmosphere/tree/master/stratosphere/loader**
+* Ghidra/Patch making tutorial:
+  - Part 1A detailing how to set up ghidra and the switch loader for windows [(link)](guides/Part1A-WindowsSetup.MD)
+  - Part 1B detailing how to set up ghidra and the switch loader for linux [(link)](guides/Part1B-LinuxSetup.MD)
+  - Part 2 detailing how to set up hactoolnet to output files to work further with, and a basic introduction to ghidra with making patches for nifm as an example. [(link)](guides/Part2.MD)
+  - you can find the resulting "patches" for what this guide produces, at https://github.com/misson20000/exefs_patches/tree/master/atmosphere/exefs_patches/nfim_ctest
 
-* Hier ist eine Liste von Skripten, die dem Beispiel aus Teil 2 der obigen Anleitung folgen:
 
-  - Python-Skript zur Ableitung des gesamten Keysets. [aes_sample.py](scripts/aes_sample.py)
-    * Dieses Skript macht "Lockpick" jeglicher Art überflüssig, solange der Benutzer Firmware-Dateien bereitstellt.
-    * Die beschriebene Kryptografie-Logik kann mit diesem Python-Skript getestet werden, Ausgabe-Keydatei (Standard "prod.keys", kann mit -k geändert werden): [aes_sample.py](scripts/aes_sample.py)
-    * Es gibt auch eine Entwickler-Variante, die auf die gleiche Weise funktioniert, [aes_sample_dev.py](scripts/aes_sample_dev.py)
+* Here's a list of scripts following the example Part 2 of the guide above teaches you how to do, and that this repository contains.
 
-  - Python-Skript zum Abrufen der neuesten mariko_master_kek_source_%% aus bereitgestellten Firmware-Dateien und zur Bereitstellung von Strings zum Aktualisieren der Arrays für key_sources.py, benötigt lz4 von pip
-    * Beispielverwendung: "python scripts/mariko_master_kek_source.py --firmware firmware" [mariko_master_kek_source.py](scripts/mariko_master_kek_source.py)
+  - Python script to obtain the latest mariko_master_kek_source_%% from provided firmware files, and provide strings to update the arrays for key_sources.py, requires lz4 from pip  
+    * example usage: "python scripts/mariko_master_kek_source.py --firmware firmware" [mariko_master_kek_source.py](scripts/mariko_master_kek_source.py)
+    * requires pycryptodome/pycryptodomex (or python3-pycryptodome from apt if debian/ubuntu which is pycryptodomex, python-pycryptodome from arch linux pacman repositories which is pycryptodome)
+    * updating scripts/key_sources.py will benefit key generation for [aes_sample.py](scripts/aes_sample.py)
 
-  - Python-Skript zur Generierung von Patches für Atmospheres Open-Source-Loader-Reimplementierung, benötigt lz4 von pip
-    * Verwendung: Führe "python scripts/atmosphere_loader_patch.py" aus, es wird automatisch heruntergeladen, der Patch für den Loader erstellt und anschließend aufgeräumt. [atmosphere_loader_patch.py](scripts/atmosphere_loader_patch.py)
+  - Python script to derive entire keyset. [aes_sample.py](scripts/aes_sample.py)
+    * The cryptographic logic described can be sampled with this python script, output keyfile (default "prod.keys", can be altered with -k) : [aes_sample.py](scripts/aes_sample.py)
+    * There is also a developer variant, which works the same way, [aes_sample_dev.py](scripts/aes_sample_dev.py)
+    * requires pycryptodome/pycryptodomex (or python3-pycryptodome from apt if debian/ubuntu which is pycryptodomex, python-pycryptodome from arch linux pacman repositories which is pycryptodome)
 
-  - Python-Skript zur Batch-Erstellung von Patches für bereitgestellte Firmware-Dateien.
-    * Verwendung: Lege Firmware-Dateien in einem Ordner namens "firmware" ab oder gib einen Speicherort mit -l oder --location an, stelle Keys mit -k oder --keys bereit, ansonsten wird standardmäßig ~/.switch/prod.keys verwendet
-    * Beispielverwendung: "python scripts/make_patches.py --location temp_folder --keys prod.keys"
-    * Wenn der Endbenutzer über mariko_bek und mariko_kek verfügt (erhältlich mit der release.nfo für die Scene-Release von "Marvel's Spider-Man: Miles Morales" von BigBlueBox), wird auch die Keygenerierung versucht.
-    * [make_patches.py](scripts/make_patches.py)
+  - Python script to check known patterns for sys-patch.
+    * Usage: put firmware files in a folder named firmware, or supply a location with -l or --location, supply keys with -k or --keys., otherwise it will default to ~/.switch/prod.keys
+    * example usage: "python scripts/check_patches.py --location temp_folder --keys prod.keys"
+    * [check_patches.py](scripts/check_patches.py)
+    * requires pycryptodome/pycryptodomex (or python3-pycryptodome from apt if debian/ubuntu which is pycryptodomex, python-pycryptodome from arch linux pacman repositories which is pycryptodome)
 
-  - Python-Skript zur Generierung des "[disable_ca_verification patch](https://github.com/misson20000/exefs_patches#disable-ca-verification)", [(link)](scripts/disable_ca_verification_patch.py)
+  - Python script to generate the "[disable_ca_verification patch](https://github.com/misson20000/exefs_patches#disable-ca-verification)", [(link)](scripts/disable_ca_verification_patch.py) - no longer maintained as of firmware version 19.0.0
 
-  - Python-Skript zur Generierung des "[disable_browser_ca_verification patch](https://github.com/misson20000/exefs_patches#disable-browser-ca-verification)", [(link)](scripts/disable_browser_ca_verification_patch.py)
+  - Python script to generate the "[disable_browser_ca_verification patch](https://github.com/misson20000/exefs_patches#disable-browser-ca-verification)", [(link)](scripts/disable_browser_ca_verification_patch.py) - no longer maintained as of firmware version 19.0.0
 
-  - Python-Skript zur Generierung des "[nifm_ctest patch](https://github.com/misson20000/exefs_patches#nifm-ctest)", [(link)](scripts/nifm_ctest_patch.py)
-
-* Danksagungen: 
-* [@sciresm](https://github.com/SciresM) - hactool - [(scripts/aes128.py)](scripts/aes128.py)
+* Credits: 
+* [@sciresm](https://github.com/SciresM) - hactool -  [(scripts/aes128.py)](scripts/aes128.py)
 * [@reswitched](https://github.com/reswitched) - [(scripts/nxo64.py)](scripts/nxo64.py)
 * [@Thealexbarney](https://github.com/Thealexbarney) - libhac/hactoolnet
 * [@blawar](https://github.com/blawar) - für Referenzen zu verschiedenen Dingen in [nut](https://github.com/blawar/nut)

@@ -29,13 +29,17 @@ Teil 2 behandelt die Grundlagen zum Erhalt der benötigten Switch-Binärdateien.
 
 ![alt text](https://github.com/borntohonk/Switch-Ghidra-Guides/blob/master/img/ghidra-nifm-offset.png?raw=true)
 
-10. Der Patch, den wir erstellen wollen, ersetzt die Anweisung an diesem Offset durch 'MOV X0, #0xD180 + MOVK X0, #0x8F0, LSL #16 + SVC #0XB + MOV X0, XZR + RET' (00 30 9A D2 00 1E A1 F2 61 01 00 D4 E0 03 1F AA C0 03 5F D6) - Dies bewirkt, dass die Funktion am Offset 04 42 0C endet, anstatt ihre ursprüngliche Funktion auszuführen. *Aktualisierte Zeichenfolge enthält einen Patch mit hinzugefügtem Sleep, da das vorherige Muster bei einigen Nutzern Probleme verursachte. (Dies sind ARM-Befehle)
+10. The patch we want to make is to change out the instruction at that offset, with 'MOV X0, #0xD180 + MOVK X0, #0x8F0, LSL #16 + SVC #0XB + MOV X0, XZR + RET' (00 30 9A D2 00 1E A1 F2 61 01 00 D4 E0 03 1F AA C0 03 5F D6) - This will make the function at offset 04 42 0C to end instead of doing the function it previously did, essentially cutting it short. *updated string to include patch with a sleep added as apparently the previous pattern would cause issues to some users. (These are ARM instructions)
 
-**Hinweis 1:** Die Offsets von ghidra-loader sind um -0x100 verschoben, daher verwenden wir im nächsten Teil den um +0x100 korrigierten Offset (04 43 0C statt 04 42 0C)
-**Hinweis 2:** Die Beispielwerte unten gelten für Version 14.1.1 und können von den obigen Beispielbildern abweichen.
 
-11. "50 41 54 43 48" steht für "PATCH", "04 43 0C" ist der Offset für den Patch, "00 14" ist die Länge des anzuwendenden Patches, "00 30 9A D2 00 1E A1 F2 61 01 00 D4 E0 03 1F AA C0 03 5F D6" ist der Patch, der an diesem Offset angewendet wird ('MOV X0, #0xD180 + MOVK X0, #0x8F0, LSL #16 + SVC #0XB + MOV X0, XZR + RET'), und 45 4F 46 steht für EOF. Dies umgeht effektiv den "Konnektivitätstest" und ermöglicht die Nutzung von Netzwerkfunktionen in geschlossenen Netzwerken, wo normalerweise nie X-Organization: Nintendo an die Konsole zurückgesendet würde. (Die untenstehende Tabelle gibt dir einen besseren visuellen Überblick über die Struktur des Patches)
 
-| PATCH-Magic | Offset | Patch-Größe | Anzuwendender Patch | EOF-Magic |
+
+**note 1:** the offsets ghidra-loader gives you are -0x100, so the resulting offset we use in the next part is +0x100 (04 43 0C, up from 04 42 0C)
+**note 2:** the example values below are for 14.1.1, and may be inconsistent with the example images from above.
+**note 3:** this kind of patch generation (".ips") is deprecated for system applications that are marked as "execute-only" as of 19.0.0 (potentially including the one provided example for; "NIFM")
+
+11. "50 41 54 43 48" is "PATCH", "04 43 0C" is the offset we're patching, "00 14" is the length of patch we're applying, "00 30 9A D2 00 1E A1 F2 61 01 00 D4 E0 03 1F AA C0 03 5F D6" Is the patch we are applying at that offset ('MOV X0, #0xD180 + MOVK X0, #0x8F0, LSL #16 + SVC #0XB + MOV X0, XZR + RET'), and 45 4F 46 is EOF. This effectively patches out the "connectivity test" and lets you use network functionality on closed networks where otherwise X-Organization: Nintendo would never be returned to the console. (You can look at the table below to get a more visual concept of how this patch is structured)
+
+| PATCH magic | Offset | Size of patch | Patch to be applied | EOF magic |
 | :---: | :---: | :---: | :---: | :---: |
 | 50 41 54 43 48 | 04 43 0C | 00 14 | 00 30 9A D2 00 1E A1 F2 61 01 00 D4 E0 03 1F AA C0 03 5F D6 | 45 4F 46 |
