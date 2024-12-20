@@ -1,6 +1,6 @@
 Teil 1A: Einrichtung von Ghidra
 
-Diese Anleitung wurde für Windows 10 erstellt und setzt voraus, dass du eine Git-Shell installiert hast und in der Lage bist, CMD-Terminals an gewünschten Speicherorten zu öffnen.
+Diese Anleitung wurde für Windows 10/11 erstellt und setzt voraus, dass du eine Git-Shell installiert hast und in der Lage bist, CMD/PowerShell-Terminals an gewünschten Speicherorten zu öffnen.
 
 1. Lade OpenJDK 21 LTS entweder von https://adoptium.net/ oder https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.4%2B7/OpenJDK21U-jdk_x64_windows_hotspot_21.0.4_7.msi herunter
 2. Installiere das heruntergeladene OpenJDK (stelle sicher, dass während der Installation der JAVA_HOME-Pfad gesetzt wird)
@@ -15,7 +15,7 @@ Diese Anleitung wurde für Windows 10 erstellt und setzt voraus, dass du eine Gi
 11. Navigiere zu deinem Ghidra-Switch-Loader-Ordner und dann in den "dist"-Ordner, den er erstellt hat, und wähle die .zip-Datei aus, die sich dort befinden sollte
 12. Starte Ghidra neu
 
-Anleitung für Winget-Benutzer (gilt für Windows 10 und Windows 11), öffne das Terminal als Administrator und führe folgende Befehle aus:
+Anleitung für Winget-Benutzer (Windows 11 hat Winget bereits vorinstalliert), öffne PowerShell als Administrator und führe folgende Befehle aus:
 
 # (stelle sicher, dass das Java-Home-Verzeichnis gesetzt ist)
 1. winget install -i EclipseAdoptium.Temurin.21.JDK
