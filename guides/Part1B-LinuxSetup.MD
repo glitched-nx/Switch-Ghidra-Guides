@@ -1,11 +1,11 @@
-Part 1B: Setting up Ghidra
+Teil 1B: Einrichtung von Ghidra
 
-This guide is done on Ubuntu, and assumes you have git, wget and curl. They can be gotten by doing "sudo apt-get install -y wget curl git"
+Diese Anleitung ist für Ubuntu geschrieben und setzt voraus, dass git, wget und curl installiert sind. Diese können mit "sudo apt-get install -y wget curl git" installiert werden.
 
-0. (optional) put this into your terminal "curl -sSL https://github.com/borntohonk/Switch-Ghidra-Guides/blob/master/scripts/setup_ghidra.sh | sh"
-1. or put this into your terminal: 
+0. (optional) Gib dies in dein Terminal ein: "curl -sSL https://github.com/borntohonk/Switch-Ghidra-Guides/blob/master/scripts/setup_ghidra.sh | sh"
+1. oder gib Folgendes in dein Terminal ein:
 
-```
+```bash
 cd $HOME/ && \
 wget https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.4%2B7/OpenJDK21U-jdk_x64_linux_hotspot_21.0.4_7.tar.gz && \
 mkdir ojdk21 && \
@@ -33,4 +33,4 @@ source $HOME/.bash_aliases && \
 ghidra
 ```
 
-2. You now should have a functional ghidra setup with the nintendo switch binary extension installed. Call for it by typing "ghidra" into your terminal.
+2. Du solltest jetzt eine funktionsfähige Ghidra-Installation mit der Nintendo Switch Binary-Erweiterung haben. Starte sie, indem du "ghidra" in dein Terminal eingibst.

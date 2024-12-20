@@ -1,25 +1,25 @@
-Part 1A: Setting up Ghidra
+Teil 1A: Einrichtung von Ghidra
 
-This guide is done on Windows 10, and assumes you have some sort of git shell installed, and also that you're competent enough to be able to open cmd terminals at the location you want.
+Diese Anleitung wurde für Windows 10 erstellt und setzt voraus, dass du eine Git-Shell installiert hast und in der Lage bist, CMD-Terminals an gewünschten Speicherorten zu öffnen.
 
-1. get openjdk 21 lts from either https://adoptium.net/ or https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.4%2B7/OpenJDK21U-jdk_x64_windows_hotspot_21.0.4_7.msi
-2. install openjdk that you just downloaded (make sure to set JAVA_HOME path while installing)
-3. get ghidra https://github.com/NationalSecurityAgency/ghidra/releases/latest
-4. extract it (example ghidra_11.2_PUBLIC_20240926.zip ), and move the folder (example "ghidra_11.2_PUBLIC_20240926") to C:/ghidra/ghidra_11.2_PUBLIC
-5. get the code repository, using git clone "git clone https://github.com/borntohonk/Ghidra-Switch-Loader"
-6. open a terminal cmd prompt in the folder you just git cloned and put ( set "GHIDRA_INSTALL_DIR" "C:/ghidra/ghidra_11.2_PUBLIC" ) without the brackets into your cmd terminal, powershell or manually as an enviroment variable. (this value is only retained while the cmd window is open, don't rely on the "set" command for different sessions)
-7. run gradlew in the Ghidra-Switch-Loader directory by clicking "gradlew.bat" or putting ./gradlew in your cmd/powershell terminal.
-8. go to your ghidra folder (should be C:\ghidra\ghidra_11.2_PUBLIC in this specific example)
-9. Click "File" top left then "Install extensions"
-10. press the + button in upper right corner.
-11. Navigate to your Ghidra-Switch-Loader folder and then into the "dist" folder it made, then select the .zip that should be in there.
-12. restart ghidra
+1. Lade OpenJDK 21 LTS entweder von https://adoptium.net/ oder https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.4%2B7/OpenJDK21U-jdk_x64_windows_hotspot_21.0.4_7.msi herunter
+2. Installiere das heruntergeladene OpenJDK (stelle sicher, dass während der Installation der JAVA_HOME-Pfad gesetzt wird)
+3. Lade Ghidra von https://github.com/NationalSecurityAgency/ghidra/releases/latest herunter
+4. Entpacke die Datei (zum Beispiel ghidra_11.2_PUBLIC_20240926.zip) und verschiebe den Ordner (zum Beispiel "ghidra_11.2_PUBLIC_20240926") nach C:/ghidra/ghidra_11.2_PUBLIC
+5. Hole dir das Code-Repository mit dem Befehl "git clone https://github.com/borntohonk/Ghidra-Switch-Loader"
+6. Öffne ein CMD-Terminal im gerade geklonten Ordner und gib (set "GHIDRA_INSTALL_DIR" "C:/ghidra/ghidra_11.2_PUBLIC") ohne die Klammern in dein CMD-Terminal oder PowerShell ein, oder setze es manuell als Umgebungsvariable. (dieser Wert bleibt nur bestehen, solange das CMD-Fenster geöffnet ist, verlasse dich nicht auf den "set"-Befehl für verschiedene Sitzungen)
+7. Führe gradlew im Ghidra-Switch-Loader-Verzeichnis aus, indem du auf "gradlew.bat" klickst oder ./gradlew in deinem CMD/PowerShell-Terminal eingibst
+8. Gehe zu deinem Ghidra-Ordner (sollte in diesem Beispiel C:\ghidra\ghidra_11.2_PUBLIC sein)
+9. Klicke oben links auf "File" und dann auf "Install extensions"
+10. Drücke den +-Button in der oberen rechten Ecke
+11. Navigiere zu deinem Ghidra-Switch-Loader-Ordner und dann in den "dist"-Ordner, den er erstellt hat, und wähle die .zip-Datei aus, die sich dort befinden sollte
+12. Starte Ghidra neu
 
-guide for winget users (applicable for windows 10 and windows 11), open terminal as administrator and then do:
+Anleitung für Winget-Benutzer (gilt für Windows 10 und Windows 11), öffne das Terminal als Administrator und führe folgende Befehle aus:
 
-# (make sure to set java home directory)
+# (stelle sicher, dass das Java-Home-Verzeichnis gesetzt ist)
 1. winget install -i EclipseAdoptium.Temurin.21.JDK
-# (only needed if you don't already have a git shell installed)
+# (nur nötig, wenn du noch keine Git-Shell installiert hast)
 2. winget install git.git
 3. curl -fsSL https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.2_build/ghidra_11.2_PUBLIC_20240926.zip -O
 4. mkdir C:/ghidra
@@ -27,12 +27,12 @@ guide for winget users (applicable for windows 10 and windows 11), open terminal
 6. rm ghidra_11.2_PUBLIC_20240926.zip
 7. git clone https://github.com/borntohonk/Ghidra-Switch-Loader
 8. cd Ghidra-Switch-Loader
-# (note this requires running terminal as administrator)
+# (beachte, dass dies die Ausführung des Terminals als Administrator erfordert)
 9. [Environment]::SetEnvironmentVariable("GHIDRA_INSTALL_DIR", "C:/ghidra/ghidra_11.2_PUBLIC" ,"Machine")
 10. ./gradlew
 11. cd dist
 12. Get-ChildItem './' -Filter *.zip | Expand-Archive -DestinationPath 'C:/ghidra/ghidra_11.2_PUBLIC/Ghidra/Extensions' -Force
-you can now start ghidra using ghidraRun.bat in C:\ghidra\ghidra_11.2_PUBLIC
+Du kannst Ghidra jetzt über ghidraRun.bat in C:\ghidra\ghidra_11.2_PUBLIC starten
 
 
 ![alt text](https://github.com/borntohonk/Switch-Ghidra-Guides/blob/master/img/ghidra-w.png?raw=true)
